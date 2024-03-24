@@ -32,10 +32,7 @@ class DogsListsAdapter: ListAdapter<DogsItem, DogsListsAdapter.DogViewHolder>(Do
             dogName.text = dogModel.name
             dogBreed.text = dogModel.bred_for
             dogOrigin.text = dogModel.origin
-//            dogModel.reference_image_id?.let {
-//                dogImage.load(it)
-//                Log.d("DogsListsAdapter", "Binding image: $it")
-//            }
+
 
             dogModel.reference_image_id?.let {
                 getDogImage(dogImage, it)
