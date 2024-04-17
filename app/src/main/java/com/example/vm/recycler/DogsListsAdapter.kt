@@ -11,8 +11,9 @@ import androidx.recyclerview.widget.RecyclerView
 import coil.load
 import coil.size.Scale
 import com.example.vm.R
+import com.example.vm.share_domain.model.dogs.DogVo
 
-class DogsListsAdapter: ListAdapter<DogsItem, DogsListsAdapter.DogViewHolder>(DogsDiffUtillsCallback()) {
+class DogsListsAdapter: ListAdapter<DogVo, DogsListsAdapter.DogViewHolder>(DogsDiffUtillsCallback()) {
     inner class DogViewHolder(itemView: View): RecyclerView.ViewHolder(itemView){
 
         private fun getDogImage(imageView: ImageView, imageId: String){
@@ -22,7 +23,7 @@ class DogsListsAdapter: ListAdapter<DogsItem, DogsListsAdapter.DogViewHolder>(Do
             }
         }
 
-        fun bind(dogModel: DogsItem){
+        fun bind(dogModel: DogVo){
 
             val dogName = itemView.findViewById<TextView>(R.id.dogName)
             val dogBreed = itemView.findViewById<TextView>(R.id.bredFor)
@@ -30,11 +31,11 @@ class DogsListsAdapter: ListAdapter<DogsItem, DogsListsAdapter.DogViewHolder>(Do
             val dogImage = itemView.findViewById<androidx.appcompat.widget.AppCompatImageView>(R.id.imageDog)
 
             dogName.text = dogModel.name
-            dogBreed.text = dogModel.bred_for
+            dogBreed.text = dogModel.bredFor
             dogOrigin.text = dogModel.origin
 
 
-            dogModel.reference_image_id?.let {
+            dogModel.referenceImageId?.let {
                 getDogImage(dogImage, it)
             }
 

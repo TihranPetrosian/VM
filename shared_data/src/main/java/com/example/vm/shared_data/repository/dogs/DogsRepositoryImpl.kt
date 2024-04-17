@@ -1,0 +1,34 @@
+package com.example.vm.shared_data.repository.dogs
+
+import com.example.vm.share_domain.model.dogs.DogVo
+import com.example.vm.share_domain.repository.dogs.DogsRepository
+import com.example.vm.share_domain.state.Resource
+import com.example.vm.shared_data.service.dogs.DogResponseModel
+import com.example.vm.shared_data.service.dogs.DogsApiService
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.flow
+import javax.inject.Inject
+
+class DogsRepositoryImpl @Inject constructor(
+    private val dogsApiService: DogsApiService,
+) : DogsRepository {
+
+    override fun fetchDogs(): Flow<Resource<List<DogVo>>> = flow {
+        runCatching {
+            emit(Resource.Loading(null))
+            dogsApiService.getData().map { it.toVo() }
+        }.onSuccess {  data ->
+            emit(Resource.Success(data))
+        }.onFailure { error ->
+            emit(Resource.Error(error))
+        }
+    }
+}
+
+private fun DogResponseModel.toVo(): DogVo = DogVo(
+    id = id,
+    bredFor = bredFor,
+    name = name,
+    origin = origin,
+    referenceImageId = referenceImageId,
+)

@@ -1,54 +1,107 @@
 package com.example.vm
 
-import android.util.Log
-import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.vm.api.Common
-import com.example.vm.recycler.DogsItem
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.flow.MutableSharedFlow
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.asSharedFlow
-import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.collect
-import kotlinx.coroutines.flow.count
-import kotlinx.coroutines.flow.filter
-import kotlinx.coroutines.flow.flatMapConcat
-import kotlinx.coroutines.flow.flow
-import kotlinx.coroutines.flow.map
+import com.example.vm.base.MviEffect
+import com.example.vm.base.MviEvent
+import com.example.vm.base.MviScreenState
+import com.example.vm.base.MviState
+import com.example.vm.base.MviViewModel
+import com.example.vm.base.MviViewModelState
+import com.example.vm.share_domain.model.dogs.DogVo
+import com.example.vm.share_domain.state.Resource
+import com.example.vm.share_domain.use_case.fetch_dogs.FetchDogsUseCase
+import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
-import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
+import javax.inject.Inject
 
-class SimpleViewModel: ViewModel() {
+object DogsListContract {
 
-    private val viewModelStateFlow = MutableStateFlow(emptyList<DogsItem>())
-    private val _stateFlow = MutableStateFlow(emptyList<DogsItem>())
-    val stateFlow = _stateFlow.asStateFlow()
+    sealed interface Event : MviEvent {
+        data class Search(val query: String) : Event
+    }
+
+    sealed interface Effect : MviEffect
+
+    data class State(
+        override val screenState: ScreenState,
+        override val viewModelState: ViewModelState,
+    ) : MviState() {
+
+        data class ViewModelState(
+            val dogs: List<DogVo>,
+        ) : MviViewModelState
+
+        sealed interface ScreenState : MviScreenState {
+
+            data object Loading : ScreenState
+
+            data class Success(val data: List<DogVo>) : ScreenState
+
+            data object Error : ScreenState
+        }
+    }
+}
+
+@HiltViewModel
+class SimpleViewModel @Inject constructor(
+    private val fetchDogsUseCase: FetchDogsUseCase,
+) : MviViewModel<DogsListContract.State, DogsListContract.State.ScreenState, DogsListContract.State.ViewModelState, DogsListContract.Event, DogsListContract.Effect>(
+    initialState = DogsListContract.State(
+        viewModelState = DogsListContract.State.ViewModelState(emptyList()),
+        screenState = DogsListContract.State.ScreenState.Loading,
+    )
+) {
 
     init {
-        viewModelScope.launch {
-            val dogs = runCatching {
-                Common.retrofitService.getData()
-            }.onSuccess {
-                _stateFlow.emit(it)
-                viewModelStateFlow.emit(it)
-            }.onFailure {
-                Log.e("Error", "onFailure: ", it)
-            }.getOrDefault(emptyList<DogsItem>())
+        loadData()
+    }
+
+    override fun handleEvent(event: DogsListContract.Event) {
+        when (event) {
+            is DogsListContract.Event.Search -> handleSearchDogsEvent(event.query)
         }
     }
 
-    fun searchDogs(searchText: String) {
-        viewModelScope.launch {
-            withContext(Dispatchers.Default){
-                _stateFlow.emit(
-                    viewModelStateFlow.value.filter {
-                        it.name?.contains(searchText) == true
-                                ||it.bred_for?.contains(searchText) == true
+    private fun loadData() {
+        fetchDogsUseCase.execute()
+            .onEach { resource ->
+                when (resource) {
+                    is Resource.Loading -> setState {
+                        copy(
+                            screenState = DogsListContract.State.ScreenState.Loading,
+                        )
                     }
+                    is Resource.Success -> setState {
+                        copy(
+                            viewModelState = viewModelState.copy(
+                                dogs = resource.data,
+                            ),
+                            screenState = DogsListContract.State.ScreenState.Success(
+                                data = resource.data,
+                            )
+                        )
+                    }
+                    is Resource.Error -> setState {
+                        copy(
+                            screenState = DogsListContract.State.ScreenState.Error,
+                        )
+                    }
+                }
+            }
+            .launchIn(viewModelScope)
+    }
+
+    private fun handleSearchDogsEvent(query: String) {
+        viewModelScope.launch {
+            setState {
+                copy(
+                    screenState = DogsListContract.State.ScreenState.Success(
+                        data = viewModelState.dogs.filter {
+                            it.name?.contains(query) == true || it.bredFor?.contains(query) == true
+                        }
+                    )
                 )
             }
         }

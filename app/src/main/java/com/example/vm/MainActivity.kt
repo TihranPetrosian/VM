@@ -5,11 +5,16 @@ import android.util.Log
 import android.widget.EditText
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.view.isVisible
 import androidx.core.widget.addTextChangedListener
 import androidx.lifecycle.flowWithLifecycle
 import androidx.lifecycle.lifecycleScope
+import com.example.di.DaggerFeatureDogsComponent
+import com.example.di.FeatureDogsModuleDependencies
 import com.example.vm.databinding.ActivityMainBinding
 import com.example.vm.recycler.DogsListsAdapter
+import dagger.hilt.android.AndroidEntryPoint
+import dagger.hilt.android.EntryPointAccessors
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.channelFlow
@@ -21,6 +26,7 @@ import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
 
 
+@AndroidEntryPoint
 class MainActivity : AppCompatActivity() {
 
     private val binding: ActivityMainBinding by lazy {
@@ -29,6 +35,17 @@ class MainActivity : AppCompatActivity() {
     private val simpleViewModel: SimpleViewModel by viewModels()
 
     override fun onCreate(savedInstanceState: Bundle?) {
+        DaggerFeatureDogsComponent.builder()
+            .context(applicationContext)
+            .appDependencies(
+                EntryPointAccessors.fromApplication(
+                    context = applicationContext,
+                    entryPoint = FeatureDogsModuleDependencies::class.java
+                )
+            )
+            .build()
+            .inject(this)
+
         super.onCreate(savedInstanceState)
         setContentView(binding.root)
 
@@ -37,16 +54,23 @@ class MainActivity : AppCompatActivity() {
         rvDogs.adapter = adapter
 
         lifecycleScope.launch {
-            simpleViewModel.stateFlow.flowWithLifecycle(lifecycle).collectLatest {
-                Log.d("Main", "onCreate: $it")
-                adapter.submitList(it)
+            simpleViewModel.listenState().flowWithLifecycle(lifecycle).collectLatest { screenState ->
+                binding.apply {
+                    progressCircular.isVisible = screenState is DogsListContract.State.ScreenState.Loading
+                    rvDogs.isVisible = screenState is DogsListContract.State.ScreenState.Success
+                    when (screenState) {
+                        is DogsListContract.State.ScreenState.Loading -> Unit
+                        is DogsListContract.State.ScreenState.Error -> Unit
+                        is DogsListContract.State.ScreenState.Success -> adapter.submitList(screenState.data)
+                    }
+                }
             }
         }
         binding.editText.textChanges()
             .distinctUntilChanged()
             .debounce(500)
             .onEach {
-                simpleViewModel.searchDogs(it)
+                simpleViewModel.setEvent(DogsListContract.Event.Search(it))
             }
             .flowWithLifecycle(lifecycle)
             .launchIn(lifecycleScope)
