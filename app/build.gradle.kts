@@ -3,6 +3,7 @@ plugins {
     id("org.jetbrains.kotlin.android")
     kotlin("kapt")
     id("com.google.dagger.hilt.android")
+    id("androidx.navigation.safeargs.kotlin")
 }
 
 android {
@@ -63,12 +64,25 @@ dependencies {
     implementation("io.coil-kt:coil:2.6.0")
 
     implementation("com.squareup.okhttp3:logging-interceptor:4.12.0")
+    implementation(project(":shared_domain"))
 
-    implementation(project(":share_domain"))
     implementation(project(":shared_data"))
     implementation(project(":network"))
+    implementation(project(":core"))
     implementation("com.google.dagger:hilt-android:2.51")
     kapt("com.google.dagger:hilt-android-compiler:2.51")
+
+    val nav_version = "2.7.7"
+
+    // Kotlin
+    implementation("androidx.navigation:navigation-fragment-ktx:$nav_version")
+    implementation("androidx.navigation:navigation-ui-ktx:$nav_version")
+    implementation("androidx.navigation:navigation-runtime-ktx:$nav_version")
+    implementation("androidx.navigation:navigation-common-ktx:$nav_version")
+
+    // Feature module Support
+    implementation("androidx.navigation:navigation-dynamic-features-fragment:$nav_version")
+
 }
 
 kapt {

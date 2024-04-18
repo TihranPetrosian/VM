@@ -6,7 +6,7 @@ plugins {
 }
 
 android {
-    namespace = "com.example.vm.shared_data"
+    namespace = "com.example.vm.shared_domain"
     compileSdk = 34
 
     defaultConfig {
@@ -35,12 +35,8 @@ android {
 }
 
 dependencies {
-    implementation(project(":network"))
-    implementation(project(":shared_domain"))
-
+    //implementation(project(":shared_data"))
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.8.0")
-    implementation("com.squareup.retrofit2:retrofit:2.10.0")
-    implementation("com.squareup.retrofit2:converter-gson:2.10.0")
     implementation("com.google.dagger:hilt-android:2.51")
     kapt("com.google.dagger:hilt-android-compiler:2.51")
 }

@@ -1,4 +1,4 @@
-package com.example.vm.recycler
+package com.example.dogs
 
 import androidx.recyclerview.widget.DiffUtil
 import com.example.vm.share_domain.model.dogs.DogVo

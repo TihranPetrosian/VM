@@ -16,5 +16,6 @@ dependencyResolutionManagement {
 rootProject.name = "VM"
 include(":app")
 include(":shared_data")
-include(":share_domain")
+include(":shared_domain")
 include(":network")
+include(":core")
