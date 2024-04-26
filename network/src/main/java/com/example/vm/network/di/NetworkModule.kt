@@ -5,11 +5,13 @@ import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
+import okhttp3.Interceptor
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Converter
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
+import java.util.concurrent.TimeUnit
 import javax.inject.Qualifier
 
 @Qualifier
@@ -19,6 +21,14 @@ annotation class GsonConvertorFactory
 @Qualifier
 @Retention(AnnotationRetention.BINARY)
 annotation class TheDogsRetrofit
+
+@Qualifier
+@Retention(AnnotationRetention.BINARY)
+annotation class TheDogsApiInterceptor
+
+@Qualifier
+@Retention(AnnotationRetention.BINARY)
+annotation class TheDogsApiOkHttpClient
 
 @Module
 @InstallIn(SingletonComponent::class)
@@ -33,19 +43,40 @@ object NetworkModule {
         this.level = HttpLoggingInterceptor.Level.BODY
     }
 
+    @TheDogsApiInterceptor
     @Provides
-    fun provideOkHttpClient(httpLoggingInterceptor: HttpLoggingInterceptor): OkHttpClient =
+    fun provideTheDogApiInterceptor(): Interceptor = Interceptor { chain ->
+        val request = chain.request()
+
+        chain.proceed(
+            request = request.newBuilder()
+                .addHeader("x-api-key", Api.TheDogApi.KEY)
+                .build()
+        )
+    }
+
+    @TheDogsApiOkHttpClient
+    @Provides
+    fun provideOkHttpClient(
+        httpLoggingInterceptor: HttpLoggingInterceptor,
+        @TheDogsApiInterceptor dogsApiInterceptor: Interceptor,
+    ): OkHttpClient =
         OkHttpClient.Builder().apply {
-            this.addInterceptor(httpLoggingInterceptor)
-        }.build()
+            addInterceptor(dogsApiInterceptor)
+            addInterceptor(httpLoggingInterceptor)
+        }
+            .connectTimeout(20, TimeUnit.SECONDS)
+            .readTimeout(20, TimeUnit.SECONDS)
+            .writeTimeout(20, TimeUnit.SECONDS)
+            .build()
 
     @TheDogsRetrofit
     @Provides
     fun provideTheDogsRetrofit(
         @GsonConvertorFactory convertorFactory: Converter.Factory,
-        okHttpClient: OkHttpClient,
+        @TheDogsApiOkHttpClient okHttpClient: OkHttpClient,
     ): Retrofit = Retrofit.Builder()
-        .baseUrl(Api.THE_DOG_API_BASE_URL)
+        .baseUrl(Api.TheDogApi.URL)
         .addConverterFactory(convertorFactory)
         .client(okHttpClient)
         .build()

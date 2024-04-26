@@ -9,11 +9,18 @@ android {
     namespace = "com.example.vm.network"
     compileSdk = 34
 
+    buildFeatures {
+        buildConfig = true
+    }
+
     defaultConfig {
         minSdk = 24
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         consumerProguardFiles("consumer-rules.pro")
+
+        buildConfigField("String", "THE_DOG_API_BASE_URL", "${findProperty("theDogApiBaseUrl")}")
+        buildConfigField("String", "THE_DOG_API_KEY", "${findProperty("theDogApiKey")}")
     }
 
     buildTypes {
