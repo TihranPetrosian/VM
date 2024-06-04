@@ -1,4 +1,4 @@
-package com.example.dogs
+package com.example.cats
 
 import androidx.lifecycle.viewModelScope
 import com.example.core.mvi.MviViewModel
@@ -9,7 +9,7 @@ import com.example.dogs.DogsListContract.State
 import com.example.dogs.DogsListContract.State.ScreenState
 import com.example.dogs.DogsListContract.State.ViewModelState
 import com.example.vm.share_domain.model.dogs.PetsVo
-import com.example.vm.share_domain.use_case.fetch_dogs.FetchDogsUseCase
+import com.example.vm.share_domain.use_case.fetch_cats.FetchCatsUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.launchIn
@@ -19,8 +19,8 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
-class DogsListViewModel @Inject constructor(
-    private val fetchDogsUseCase: FetchDogsUseCase,
+class CatsListViewModel @Inject constructor(
+    private val fetchCatsUseCase: FetchCatsUseCase,
 ) : MviViewModel<State, ScreenState, ViewModelState, Event, Effect>(
     initialState = State(
         viewModelState = ViewModelState(emptyList()),
@@ -39,7 +39,7 @@ class DogsListViewModel @Inject constructor(
     }
 
     private fun loadData() {
-        fetchDogsUseCase.execute()
+        fetchCatsUseCase.execute()
             .onStart { setLoadingState() }
             .onEach(::handleResult)
             .catch { handleError(it) }

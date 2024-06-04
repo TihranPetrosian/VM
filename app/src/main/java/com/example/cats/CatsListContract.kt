@@ -1,4 +1,4 @@
-package com.example.dogs
+package com.example.cats
 
 import com.example.core.mvi.MviEffect
 import com.example.core.mvi.MviErrorScreenState
@@ -10,7 +10,7 @@ import com.example.core.mvi.MviSuccessScreenState
 import com.example.core.mvi.MviViewModelState
 import com.example.vm.share_domain.model.dogs.PetsVo
 
-object DogsListContract {
+object CatsListContract {
 
     sealed interface Event : MviEvent {
         data class Search(val query: String) : Event

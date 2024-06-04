@@ -1,7 +1,7 @@
 package com.example.vm.shared_data.di
 
-import com.example.vm.share_domain.repository.dogs.DogsRepository
-import com.example.vm.shared_data.repository.dogs.DogsRepositoryImpl
+import com.example.vm.share_domain.repository.pets.PetsRepository
+import com.example.vm.shared_data.repository.dogs.PetsRepositoryImpl
 import dagger.Binds
 import dagger.Module
 import dagger.hilt.InstallIn
@@ -12,5 +12,5 @@ import dagger.hilt.components.SingletonComponent
 interface RepositoryModule {
 
     @Binds
-    fun bindsDogsRepository(repository: DogsRepositoryImpl): DogsRepository
+    fun bindsDogsRepository(repository: PetsRepositoryImpl): PetsRepository
 }

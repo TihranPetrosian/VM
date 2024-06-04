@@ -27,8 +27,8 @@ import kotlinx.coroutines.flow.distinctUntilChanged
 class CatsListScreen : MviScreen<State, ScreenState, ViewModelState, Event, Effect>() {
 
     override val binding by viewBinding<ScreenCatsBinding>()
-    override val viewModel: MviViewModel<State, ScreenState, ViewModelState, Event, Effect> by viewModels<DogsListViewModel>()
-    private val dogsAdapter = DogsListsAdapter()
+    override val viewModel: MviViewModel<State, ScreenState, ViewModelState, Event, Effect> by viewModels<CatsListViewModel>()
+    private val dogsAdapter = CatsListsAdapter()
 
     override fun injectDependency() {
         DaggerFeatureDogsComponent.builder()

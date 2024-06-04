@@ -30,6 +30,18 @@ annotation class TheDogsApiInterceptor
 @Retention(AnnotationRetention.BINARY)
 annotation class TheDogsApiOkHttpClient
 
+@Qualifier
+@Retention(AnnotationRetention.BINARY)
+annotation class TheCatsRetrofit
+
+@Qualifier
+@Retention(AnnotationRetention.BINARY)
+annotation class TheCatsApiInterceptor
+
+@Qualifier
+@Retention(AnnotationRetention.BINARY)
+annotation class TheCatsApiOkHttpClient
+
 @Module
 @InstallIn(SingletonComponent::class)
 object NetworkModule {
@@ -55,6 +67,18 @@ object NetworkModule {
         )
     }
 
+    @TheCatsApiInterceptor
+    @Provides
+    fun provideTheCatsApiInterceptor(): Interceptor = Interceptor { chain ->
+        val request = chain.request()
+
+        chain.proceed(
+            request = request.newBuilder()
+                .addHeader("x-api-key", Api.TheCatApi.KEY)
+                .build()
+        )
+    }
+
     @TheDogsApiOkHttpClient
     @Provides
     fun provideOkHttpClient(
@@ -70,6 +94,21 @@ object NetworkModule {
             .writeTimeout(20, TimeUnit.SECONDS)
             .build()
 
+    @TheCatsApiOkHttpClient
+    @Provides
+    fun provideCatsOkHttpClient(
+        httpLoggingInterceptor: HttpLoggingInterceptor,
+        @TheCatsApiInterceptor catsApiInterceptor: Interceptor,
+    ): OkHttpClient =
+        OkHttpClient.Builder().apply {
+            addInterceptor(catsApiInterceptor)
+            addInterceptor(httpLoggingInterceptor)
+        }
+            .connectTimeout(20, TimeUnit.SECONDS)
+            .readTimeout(20, TimeUnit.SECONDS)
+            .writeTimeout(20, TimeUnit.SECONDS)
+            .build()
+
     @TheDogsRetrofit
     @Provides
     fun provideTheDogsRetrofit(
@@ -77,6 +116,17 @@ object NetworkModule {
         @TheDogsApiOkHttpClient okHttpClient: OkHttpClient,
     ): Retrofit = Retrofit.Builder()
         .baseUrl(Api.TheDogApi.URL)
+        .addConverterFactory(convertorFactory)
+        .client(okHttpClient)
+        .build()
+
+    @TheCatsRetrofit
+    @Provides
+    fun provideTheCatsRetrofit(
+        @GsonConvertorFactory convertorFactory: Converter.Factory,
+        @TheCatsApiOkHttpClient okHttpClient: OkHttpClient,
+    ): Retrofit = Retrofit.Builder()
+        .baseUrl(Api.TheCatApi.URL)
         .addConverterFactory(convertorFactory)
         .client(okHttpClient)
         .build()

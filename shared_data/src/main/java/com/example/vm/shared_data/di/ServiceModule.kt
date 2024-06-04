@@ -1,6 +1,8 @@
 package com.example.vm.shared_data.di
 
+import com.example.vm.network.di.TheCatsRetrofit
 import com.example.vm.network.di.TheDogsRetrofit
+import com.example.vm.shared_data.service.cats.CatsApiService
 import com.example.vm.shared_data.service.dogs.DogsApiService
 import dagger.Module
 import dagger.Provides
@@ -17,4 +19,9 @@ object ServiceModule {
     fun providesDogsApiService(
         @TheDogsRetrofit retrofit: Retrofit,
     ): DogsApiService = retrofit.create()
+
+    @Provides
+    fun providesCatsApiService(
+        @TheCatsRetrofit retrofit: Retrofit,
+    ): CatsApiService = retrofit.create()
 }

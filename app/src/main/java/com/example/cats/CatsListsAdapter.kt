@@ -1,4 +1,4 @@
-package com.example.dogs
+package com.example.cats
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
@@ -10,8 +10,8 @@ import coil.size.Scale
 import com.example.vm.databinding.ItemDogBinding
 import com.example.vm.share_domain.model.dogs.PetsVo
 
-class DogsListsAdapter : ListAdapter<PetsVo, DogsListsAdapter.DogViewHolder>(DogsDiffUtillsCallback()) {
-    inner class DogViewHolder(val binding: ItemDogBinding): RecyclerView.ViewHolder(binding.root){
+class CatsListsAdapter : ListAdapter<PetsVo, CatsListsAdapter.CatViewHolder>(CatsDiffUtillsCallback()) {
+    inner class CatViewHolder(val binding: ItemDogBinding): RecyclerView.ViewHolder(binding.root){
 
         private fun getDogImage(imageView: ImageView, imageId: String){
             val url = "https://cdn2.thedogapi.com/images/$imageId.jpg"
@@ -20,12 +20,12 @@ class DogsListsAdapter : ListAdapter<PetsVo, DogsListsAdapter.DogViewHolder>(Dog
             }
         }
 
-        fun bind(dogModel: PetsVo){
+        fun bind(catModel: PetsVo){
             binding.apply {
-                dogName.text = dogModel.name
-                bredFor.text = dogModel.bredFor
-                origin.text = dogModel.origin
-                dogModel.referenceImageId?.let {
+                dogName.text = catModel.name
+                bredFor.text = catModel.bredFor
+                origin.text = catModel.origin
+                catModel.referenceImageId?.let {
                     getDogImage(imageDog, it)
                 }
             }
@@ -35,11 +35,11 @@ class DogsListsAdapter : ListAdapter<PetsVo, DogsListsAdapter.DogViewHolder>(Dog
     override fun onCreateViewHolder(
         parent: ViewGroup,
         viewType: Int
-    ): DogViewHolder = DogViewHolder(
+    ): CatViewHolder = CatViewHolder(
         binding = ItemDogBinding.inflate(LayoutInflater.from(parent.context), parent, false)
     )
 
-    override fun onBindViewHolder(holder: DogViewHolder, position: Int) {
+    override fun onBindViewHolder(holder: CatViewHolder, position: Int) {
         holder.bind(getItem(position))
     }
 }
