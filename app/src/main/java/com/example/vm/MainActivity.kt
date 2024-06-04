@@ -9,6 +9,7 @@ import androidx.core.widget.addTextChangedListener
 import androidx.lifecycle.flowWithLifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.NavHostFragment
+import androidx.navigation.ui.setupWithNavController
 import com.example.core.utils.textChanges
 import com.example.di.DaggerFeatureDogsComponent
 import com.example.di.FeatureDogsModuleDependencies
@@ -34,5 +35,10 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(binding.root)
+
+        binding.apply {
+            bottomNav.setupWithNavController(fragmentContainerView.getFragment<NavHostFragment>().navController)
+        }
+
     }
 }

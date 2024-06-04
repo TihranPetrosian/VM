@@ -9,5 +9,18 @@
         android:id="@+id/dogsListScreen"
         android:name="com.example.dogs.DogsListScreen"
         android:label="Dogs"
-        tools:layout="@layout/screen_dogs"/>
+        tools:layout="@layout/screen_dogs">
+        <action
+            android:id="@+id/action_dogsListScreen_to_catsListScreen"
+            app:destination="@id/catsListScreen" />
+    </fragment>
+    <fragment
+        android:id="@+id/catsListScreen"
+        android:name="com.example.cats.CatsListScreen"
+        android:label="Cats"
+        tools:layout="@layout/screen_cats">
+        <action
+            android:id="@+id/action_catsListScreen_to_dogsListScreen"
+            app:destination="@id/dogsListScreen" />
+    </fragment>
 </navigation>
