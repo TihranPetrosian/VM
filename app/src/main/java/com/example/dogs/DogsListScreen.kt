@@ -7,7 +7,7 @@ import com.example.core.mvi.MviScreen
 import com.example.core.mvi.MviViewModel
 import com.example.core.utils.textChanges
 import com.example.core.utils.viewBinding
-import com.example.di.FeatureDogsComponent
+import com.example.di.DaggerFeatureDogsComponent
 import com.example.di.FeatureDogsModuleDependencies
 import com.example.dogs.DogsListContract.Effect
 import com.example.dogs.DogsListContract.Event

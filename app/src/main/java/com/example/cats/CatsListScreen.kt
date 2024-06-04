@@ -7,6 +7,7 @@ import com.example.core.mvi.MviViewModel
 import com.example.core.utils.textChanges
 import com.example.core.utils.viewBinding
 import com.example.di.DaggerFeatureDogsComponent
+import com.example.di.FeatureCatsModuleDependencies
 import com.example.di.FeatureDogsModuleDependencies
 import com.example.dogs.DogsListContract.Effect
 import com.example.dogs.DogsListContract.Event
@@ -31,12 +32,12 @@ class CatsListScreen : MviScreen<State, ScreenState, ViewModelState, Event, Effe
     private val dogsAdapter = CatsListsAdapter()
 
     override fun injectDependency() {
-        DaggerFeatureDogsComponent.builder()
+        DaggerFeatureCatsComponent.builder()
             .context(requireActivity().applicationContext)
             .appDependencies(
                 EntryPointAccessors.fromApplication(
                     context = requireActivity().applicationContext,
-                    entryPoint = FeatureDogsModuleDependencies::class.java
+                    entryPoint = FeatureCatsModuleDependencies::class.java
                 )
             )
             .build()
