@@ -8,9 +8,9 @@ import androidx.recyclerview.widget.RecyclerView
 import coil.load
 import coil.size.Scale
 import com.example.vm.databinding.ItemDogBinding
-import com.example.vm.share_domain.model.dogs.PetsVo
+import com.example.vm.share_domain.model.dogs.DogsVo
 
-class DogsListsAdapter : ListAdapter<PetsVo, DogsListsAdapter.DogViewHolder>(DogsDiffUtillsCallback()) {
+class DogsListsAdapter : ListAdapter<DogsVo, DogsListsAdapter.DogViewHolder>(DogsDiffUtillsCallback()) {
     inner class DogViewHolder(val binding: ItemDogBinding): RecyclerView.ViewHolder(binding.root){
 
         private fun getDogImage(imageView: ImageView, imageId: String){
@@ -20,7 +20,7 @@ class DogsListsAdapter : ListAdapter<PetsVo, DogsListsAdapter.DogViewHolder>(Dog
             }
         }
 
-        fun bind(dogModel: PetsVo){
+        fun bind(dogModel: DogsVo){
             binding.apply {
                 dogName.text = dogModel.name
                 bredFor.text = dogModel.bredFor

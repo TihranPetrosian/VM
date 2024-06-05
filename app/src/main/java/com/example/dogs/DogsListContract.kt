@@ -8,7 +8,7 @@ import com.example.core.mvi.MviScreenState
 import com.example.core.mvi.MviState
 import com.example.core.mvi.MviSuccessScreenState
 import com.example.core.mvi.MviViewModelState
-import com.example.vm.share_domain.model.dogs.PetsVo
+import com.example.vm.share_domain.model.dogs.DogsVo
 
 object DogsListContract {
 
@@ -27,14 +27,14 @@ object DogsListContract {
     ) : MviState() {
 
         data class ViewModelState(
-            val dogs: List<PetsVo>,
+            val dogs: List<DogsVo>,
         ) : MviViewModelState
 
         sealed interface ScreenState : MviScreenState {
 
             data object Loading : ScreenState, MviLoadingScreenState
 
-            data class Success(val data: List<PetsVo>) : ScreenState,
+            data class Success(val data: List<DogsVo>) : ScreenState,
                 MviSuccessScreenState
 
             data object Error : ScreenState, MviErrorScreenState

@@ -1,6 +1,6 @@
 package com.example.vm.share_domain.model.dogs
 
-data class PetsVo(
+data class DogsVo(
     val id: Int?,
     val bredFor: String?,
     val name: String?,

@@ -10,20 +10,12 @@ import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
 import javax.inject.Qualifier
 
-@Qualifier
-@Retention(AnnotationRetention.RUNTIME)
-annotation class DogsUseCase
-
-@Qualifier
-@Retention(AnnotationRetention.RUNTIME)
-annotation class CatsUseCase
-
 @Module
 @InstallIn(SingletonComponent::class)
 interface UseCaseModule {
 
     @Binds
-    fun fetchPetsUseCase( useCase: FetchDogsUseCaseImpl): FetchDogsUseCase
+    fun fetchDogsUseCase(useCase: FetchDogsUseCaseImpl): FetchDogsUseCase
 
     @Binds
     fun fetchCatsUseCase( useCase: FetchCatsUseCaseImpl): FetchCatsUseCase

@@ -11,7 +11,7 @@ internal object Api {
 
     object TheCatApi{
 
-        const val URL = "https://api.thecatapi.com/v1/breeds";
+        const val URL = "https://api.thecatapi.com/v1/";
         // Field from default config.
         const val  KEY = "live_LI1gJyFHKNZ41DlYldRIzw274Zeic7Kb4G2JpNqwSqK1B1WFI1e1xoqojpEYTGpW";
 

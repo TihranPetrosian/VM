@@ -3,12 +3,7 @@ package com.example.cats
 import androidx.lifecycle.viewModelScope
 import com.example.core.mvi.MviViewModel
 import com.example.core.mvi.updateSuccessState
-import com.example.dogs.DogsListContract.Effect
-import com.example.dogs.DogsListContract.Event
-import com.example.dogs.DogsListContract.State
-import com.example.dogs.DogsListContract.State.ScreenState
-import com.example.dogs.DogsListContract.State.ViewModelState
-import com.example.vm.share_domain.model.dogs.PetsVo
+import com.example.vm.share_domain.model.cats.CatsVo
 import com.example.vm.share_domain.use_case.fetch_cats.FetchCatsUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.catch
@@ -21,10 +16,10 @@ import javax.inject.Inject
 @HiltViewModel
 class CatsListViewModel @Inject constructor(
     private val fetchCatsUseCase: FetchCatsUseCase,
-) : MviViewModel<State, ScreenState, ViewModelState, Event, Effect>(
-    initialState = State(
-        viewModelState = ViewModelState(emptyList()),
-        screenState = ScreenState.Loading,
+) : MviViewModel<CatsListContract.State, CatsListContract.State.ScreenState, CatsListContract.State.ViewModelState, CatsListContract.Event, CatsListContract.Effect>(
+    initialState = CatsListContract.State(
+        viewModelState = CatsListContract.State.ViewModelState(emptyList()),
+        screenState = CatsListContract.State.ScreenState.Loading,
     )
 ) {
 
@@ -32,9 +27,9 @@ class CatsListViewModel @Inject constructor(
         loadData()
     }
 
-    override fun handleEvent(event: Event) {
+    override fun handleEvent(event: CatsListContract.Event) {
         when (event) {
-            is Event.Search -> handleSearchDogsEvent(event.query)
+            is CatsListContract.Event.Search -> handleSearchDogsEvent(event.query)
         }
     }
 
@@ -48,16 +43,16 @@ class CatsListViewModel @Inject constructor(
 
     private fun setLoadingState() = setState {
         copy(
-            screenState = ScreenState.Loading,
+            screenState = CatsListContract.State.ScreenState.Loading,
         )
     }
 
-    private fun handleResult(data: List<PetsVo>) = setState {
+    private fun handleResult(data: List<CatsVo>) = setState {
         copy(
             viewModelState = viewModelState.copy(
-                dogs = data,
+                cats = data,
             ),
-            screenState = ScreenState.Success(
+            screenState = CatsListContract.State.ScreenState.Success(
                 data = data,
             )
         )
@@ -65,7 +60,7 @@ class CatsListViewModel @Inject constructor(
 
     private fun handleError(throwable: Throwable) = setState {
         copy(
-            screenState = ScreenState.Error,
+            screenState = CatsListContract.State.ScreenState.Error,
         )
     }
 
@@ -73,9 +68,9 @@ class CatsListViewModel @Inject constructor(
         viewModelScope.launch {
             setState {
                 copy(
-                    screenState = screenState.updateSuccessState<ScreenState, ScreenState.Success> {
+                    screenState = screenState.updateSuccessState<CatsListContract.State.ScreenState, CatsListContract.State.ScreenState.Success> {
                         copy(
-                            data = viewModelState.dogs.filter {
+                            data = viewModelState.cats.filter {
                                 it.name?.contains(query) == true || it.bredFor?.contains(query) == true
                             }
                         )

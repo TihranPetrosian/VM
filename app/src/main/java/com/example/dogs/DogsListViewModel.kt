@@ -8,7 +8,7 @@ import com.example.dogs.DogsListContract.Event
 import com.example.dogs.DogsListContract.State
 import com.example.dogs.DogsListContract.State.ScreenState
 import com.example.dogs.DogsListContract.State.ViewModelState
-import com.example.vm.share_domain.model.dogs.PetsVo
+import com.example.vm.share_domain.model.dogs.DogsVo
 import com.example.vm.share_domain.use_case.fetch_dogs.FetchDogsUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.catch
@@ -52,7 +52,7 @@ class DogsListViewModel @Inject constructor(
         )
     }
 
-    private fun handleResult(data: List<PetsVo>) = setState {
+    private fun handleResult(data: List<DogsVo>) = setState {
         copy(
             viewModelState = viewModelState.copy(
                 dogs = data,

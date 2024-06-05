@@ -17,9 +17,8 @@ interface FeatureCatsModuleDependencies {
     fun fetchCatsUseCase(): FetchCatsUseCase
 }
 
-@Component(dependencies = [FeatureDogsModuleDependencies::class])
+@Component(dependencies = [FeatureCatsModuleDependencies::class])
 interface FeatureCatsComponent {
-
     fun inject(screen: Fragment)
 
     @Component.Builder
