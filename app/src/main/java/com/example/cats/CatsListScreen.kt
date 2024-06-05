@@ -1,5 +1,6 @@
 package com.example.cats
 
+import android.util.Log
 import androidx.core.view.isVisible
 import androidx.fragment.app.viewModels
 import com.example.core.mvi.MviScreen

@@ -1,5 +1,6 @@
 package com.example.cats
 
+import android.util.Log
 import androidx.lifecycle.viewModelScope
 import com.example.core.mvi.MviViewModel
 import com.example.core.mvi.updateSuccessState
@@ -34,6 +35,7 @@ class CatsListViewModel @Inject constructor(
     }
 
     private fun loadData() {
+        Log.d("CatsListViewModel", "loadData")
         fetchCatsUseCase.execute()
             .onStart { setLoadingState() }
             .onEach(::handleResult)
@@ -48,6 +50,7 @@ class CatsListViewModel @Inject constructor(
     }
 
     private fun handleResult(data: List<CatsVo>) = setState {
+        Log.d("CatsListViewModel", "handleResult: $data")
         copy(
             viewModelState = viewModelState.copy(
                 cats = data,
@@ -59,6 +62,7 @@ class CatsListViewModel @Inject constructor(
     }
 
     private fun handleError(throwable: Throwable) = setState {
+//        Log.e("CatsListViewModel", "Error loading data", throwable)
         copy(
             screenState = CatsListContract.State.ScreenState.Error,
         )

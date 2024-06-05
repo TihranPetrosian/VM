@@ -43,4 +43,6 @@ private fun CatResponseModel.toVo(): CatsVo = CatsVo(
     name = name,
     origin = origin,
     referenceImageId = referenceImageId,
+    temperament = temperament,
+    description = description,
 )
